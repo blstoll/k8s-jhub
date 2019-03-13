@@ -1,0 +1,26 @@
+proxy:
+  secretToken: "57861760b832c122b7352e687b240a87f14ed3f6240f7da70faed3268fd602dd"
+  https:
+    enabled: true
+    type: offload
+singleuser:
+  image:
+    name: jupyter/tensorflow-notebook
+    tag: 7f1482f5a136
+  profileList:
+    - display_name: "Tensorflow"
+      description: "Tensorflow/Keras notebook"
+      default: true
+    - display_name: "Minimal Notebook"
+      description: "Minimal Python notebook"
+      kubespawner_override:
+        image: jupyter/datascience-notebook:2343e33dec46
+    - display_name: "PySpark Environment"
+      description: "Python Spark Environment"
+      kubespawner_override:
+        image: jupyter/all-spark-notebook:2343e33dec46
+  defaultUrl: "/lab"
+hub:
+  extraConfig:
+    jupyterlab: |
+      c.Spawner.cmd = ['jupyter-labhub']

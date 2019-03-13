@@ -1,0 +1,14 @@
+- name: Create NFS client storage class
+  k8s_raw:
+    state: present
+    src: ~/pods/nfs-client/class.yaml
+
+- name: Create NFS client RBAC
+  k8s_raw:
+    state: present
+    src: ~/pods/nfs-client/rbac.yaml
+
+- name: Deploy NFS client storage provider
+  k8s_raw:
+    state: present
+    src: ~/pods/nfs-client/deployment.yaml

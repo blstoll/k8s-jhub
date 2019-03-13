@@ -30,3 +30,11 @@
   roles:
     - { role: 'master', tags: 'master' }
     - { role: 'helm', tags: 'helm' }
+
+- name: Deploy Pods
+  hosts: masters
+  become: False
+  gather_facts: False
+  roles:
+    - { role: 'master', tags: 'master' }
+    - { role: 'pods', tags: 'pods' }

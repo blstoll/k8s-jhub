@@ -1,0 +1,4 @@
+- name: Copy K8 Descriptions
+  synchronize:
+    src: files/pods
+    dest: ~/
