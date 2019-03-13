@@ -1,0 +1,13 @@
+- name: install weave net
+  shell: >
+    export KUBECONFIG=/etc/kubernetes/admin.conf ;
+    export kubever=$(sudo kubectl version | base64 | tr -d '\n') ;
+    curl --location "https://cloud.weave.works/k8s/net?k8s-version=$kubever" >/etc/kubectl/weave.yml ;
+    kubectl apply -f /etc/kubectl/weave.yml
+- shell: >
+    export KUBECONFIG=/etc/kubernetes/admin.conf ;
+    kubectl get pods -n kube-system -l name=weave-net
+  register: result
+  until: result.stdout.find("Running") != -1
+  retries: 100
+  delay: 10

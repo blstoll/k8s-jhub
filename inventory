@@ -1,0 +1,9 @@
+[masters]
+jhub-master
+
+[nodes]
+jhub-node1
+jhub-node2
+
+[nfs]
+jhub-master

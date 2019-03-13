@@ -1,0 +1,7 @@
+- lineinfile:
+    path: /root/.bash_profile
+    line: 'export KUBECONFIG=/etc/kubernetes/admin.conf'
+    create: yes
+- file: path=/home/vagrant/.kube state=directory owner=vagrant
+- command: cp /etc/kubernetes/admin.conf /home/vagrant/.kube/config
+- file: name=/home/vagrant/.kube/config state=file owner=vagrant

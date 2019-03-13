@@ -1,0 +1,33 @@
+- name: sysctl cfg
+  sysctl:
+    name: '{{ item.pname }}'
+    value: '{{ item.value }}'
+    reload: yes
+    sysctl_set: yes
+    sysctl_file: '/etc/sysctl.d/60-kubernetes.conf'
+  with_items:
+    - { pname: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
+    - { pname: 'net.bridge.bridge-nf-call-iptables', value: '1' }
+    - { pname: 'net.ipv4.ip_forward', value: '1' }
+
+- name: Remove swap mount
+  lineinfile:
+    dest: /etc/fstab
+    regexp: '/swapfile none swap'
+    state: absent
+  register: fstab
+
+- name: Disable swap
+  command: 'swapoff -a'
+  when: fstab.changed
+
+- name: Enable services
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: yes
+  with_items:
+    - docker
+    - ntpd
+    - kubelet
+

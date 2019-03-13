@@ -1,0 +1,24 @@
+- name: initialize kube
+  shell: >
+       sysctl -p &&
+       kubeadm reset --force &&
+       kubeadm init --apiserver-advertise-address=10.0.0.10 --apiserver-cert-extra-sans={{inventory_hostname}} --pod-network-cidr=10.244.0.0/16
+  args:
+    creates: /etc/kubeadm-join.sh
+  register: kubeadm_out
+- lineinfile:
+    path: /etc/kubeadm-join.sh
+    line: "{{kubeadm_out.stdout_lines[-1]}}"
+    create: yes
+  when: kubeadm_out.stdout.find("kubeadm join") != -1
+- service: name=kubelet state=started enabled=yes
+- file: name=/etc/kubectl state=directory
+- name: fix configmap for proxy
+  shell: >
+    export KUBECONFIG=/etc/kubernetes/admin.conf ;
+    kubectl -n kube-system get cm/kube-proxy -o yaml
+    | sed -e 's!clusterCIDR: ""!clusterCIDR: "10.0.0.0/24"!' >/etc/kubectl/kube-proxy.map ;
+    kubectl -n kube-system replace cm/kube-proxy -f  /etc/kubectl/kube-proxy.map ;
+    kubectl -n kube-system delete pods -l k8s-app=kube-proxy
+  args:
+    creates: /etc/kubectl/kube-proxy.map

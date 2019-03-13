@@ -1,0 +1,25 @@
+- name: Install NFS
+  yum:
+    name: nfs-utils
+
+- name: Create NFS mount
+  file:
+    path: /export/nfs
+    state: directory
+    owner: nfsnobody
+    group: nfsnobody
+    mode: 0755
+
+- name: Export NFS mount
+  lineinfile:
+    dest: /etc/exports
+    line: '/export/nfs *(rw,sync,no_root_squash,no_all_squash)'
+
+- name: Enable NFS services
+  service:
+    name: '{{ item }}'
+    state: started
+    enabled: yes
+  with_items:
+    - rpcbind
+    - nfs-server

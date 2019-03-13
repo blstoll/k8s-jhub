@@ -1,0 +1,44 @@
+- name: Update all packages
+  yum:
+    name: '*'
+    state: latest
+    update_cache: True
+
+- name: Install Docker dependencies
+  yum:
+    name:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+
+- name: Add Kubernetes Repository
+  yum_repository:
+    name: kubernetes
+    description: Kubernetes Repository
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    enabled: True
+    gpgkey:
+      - https://packages.cloud.google.com/yum/doc/yum-key.gpg
+      - https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgcheck: True
+  
+- name: Add Docker CE Repository
+  yum_repository:
+    name: docker-ce-stable
+    description: Docker CE Repository
+    baseurl: https://download.docker.com/linux/centos/$releasever/$basearch/stable
+    enabled: True
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    gpgcheck: True
+
+- name: Install packages
+  yum:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+      - kubelet
+      - kubeadm
+      - kubectl
+      - ntp
+      - vim

@@ -1,0 +1,5 @@
+127.0.0.1 localhost localhost.localdomain localhost4 localhost4.localdomain4
+10.0.0.10 jhub-master.kube jhub-master
+10.0.0.11 jhub-node1.kube  jhub-node1
+10.0.0.12 jhub-node2.kube  jhub-node2
+10.0.0.13 jhub-node3.kube  jhub-node3
