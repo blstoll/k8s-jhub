@@ -31,3 +31,8 @@
     - ntpd
     - kubelet
 
+- name: Add /usr/local/bin to path
+  copy:
+    dest: /etc/profile.d/usr-local-bin.sh
+    content: 'PATH=${PATH}:/usr/local/bin'
+    mode: 0755

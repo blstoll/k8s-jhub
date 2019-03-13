@@ -1,0 +1,49 @@
+- name: Create the Tiller account
+  k8s_raw:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: tiller
+        namespace: kube-system
+  become: False
+
+- name: Create the Tiller RBAC
+  k8s_raw:
+    state: present
+    definition:
+      apiVersion: rbac.authorization.k8s.io/v1
+      kind: ClusterRoleBinding
+      metadata:
+        name: tiller
+      roleRef:
+        apiGroup: rbac.authorization.k8s.io
+        kind: ClusterRole
+        name: cluster-admin
+      subjects:
+        - kind: ServiceAccount
+          name: tiller
+          namespace: kube-system
+  become: False
+
+- name: Download Helm installer
+  get_url:
+    url: https://raw.githubusercontent.com/helm/helm/master/scripts/get
+    dest: /tmp/install_helm.sh
+    mode: 0700
+  become: True
+
+- name: Install Helm
+  shell: /tmp/install_helm.sh
+  args:
+    creates: /usr/local/bin/helm
+  environment:
+    PATH: "/usr/local/bin:{{ ansible_env.PATH }}"
+  register: helm_installed
+  become: True
+
+- name: Init Helm
+  shell: "/usr/local/bin/helm init --service-account tiller --wait"
+  when: helm_installed is succeeded
+  become: False

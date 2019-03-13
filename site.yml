@@ -22,3 +22,11 @@
     master_hostname: "{{ groups['masters'][0] }}"
   roles:
     - { role: 'nodes', tags: 'nodes' }
+
+- name: Install helm
+  hosts: masters
+  become: True
+  gather_facts: False
+  roles:
+    - { role: 'master', tags: 'master' }
+    - { role: 'helm', tags: 'helm' }

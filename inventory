@@ -7,3 +7,6 @@ jhub-node2
 
 [nfs]
 jhub-master
+
+[helm]
+jhub-master

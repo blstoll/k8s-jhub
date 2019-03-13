@@ -31,6 +31,9 @@
     gpgkey: https://download.docker.com/linux/centos/gpg
     gpgcheck: True
 
+- name: Enable EPEL Repository
+  yum: name=epel-release
+
 - name: Install packages
   yum:
     name:
@@ -42,3 +45,4 @@
       - kubectl
       - ntp
       - vim
+      - python2-openshift
